@@ -5,11 +5,6 @@ from piece import Piece
 
 # List to store the info of each piece.
 pieceCollection = []
-#List to store each piece represented as a matrix.
-constructedCollection = []
-
-
-
 
 def checkRight(array, r, c):
 	try:
@@ -47,8 +42,6 @@ def checkUp(array, r, c):
 	except:
 		return False
 
-
-
 #Reads in the text file, adds each character (including spaces) to an array, if it finds a new line it creates a new row.
 #Basically lays out the text file as a grid for easier processing.
 def textFileToArray():
@@ -64,7 +57,6 @@ def textFileToArray():
 				array[rowcount].append(char)
 	return array
 
-
 #Starts searching through the array, once it finds a brick it starts to find the entire thing using findPiece (read comment for findPiece)
 def traverseArray(array):
 	for i in range(0, len(array)-1):
@@ -72,7 +64,6 @@ def traverseArray(array):
 			if " " not in array[i][j]:
 				array = findPiece(array, i, j)
 	return array
-
 
 # When traverse array finds a "brick", it sends the value and location to this function which uses Connected Component Labeling (wiki)
 # to explore surrounding bricks to find all those connected using a queue.
@@ -107,16 +98,11 @@ def findPiece(array, r, c):
 	pieceCollection.append(currentPiece)
 	return array
 
-
-
-
 if __name__ == "__main__":
 	array = textFileToArray()
 	array = traverseArray(array)
 	for pieces in pieceCollection:
-		print pieces.height,
-		print "x",
-		print pieces.width
+		print pieces.size
 		for rows in pieces.matrix:
 			print rows
 		print "\n"

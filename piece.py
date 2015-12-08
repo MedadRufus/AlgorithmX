@@ -4,6 +4,7 @@ class Piece:
 	def __init__(self, inputBrickList):
 		self.brickList = inputBrickList
 		self.constructMatrix()
+		self.size = len(inputBrickList)
 
 
 	#Goes through passed in list of bricks and creates the matrix
