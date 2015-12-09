@@ -1,4 +1,4 @@
-class Piece:
+class Piece(object):
 
 
 	def __init__(self, inputBrickList):
@@ -15,6 +15,11 @@ class Piece:
 			self.matrix = [[" " for x in range(0, self.width)] for x in range(0, self.height)]
 			for bricks in self.brickList:
 				self.matrix[bricks[0][0]-minHeight][bricks[0][1]-minWidth] = bricks[1]
+				
+			for i in range(0, len(self.brickList)):
+				self.brickList[i][0][0] -=  minHeight
+				self.brickList[i][0][1] -= minWidth
+
 
 	#Get the height and width of the piece to use to construct its matrix representation
 	def getDimensions(self):

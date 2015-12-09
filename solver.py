@@ -3,7 +3,6 @@ class Solver:
 		self.pieces = pieces
 		self.puzzle = puzzle
 		self.puzzleReference = {}
-		self.buildPuzzleReference()
 
 
 	def buildPuzzleReference(self):
@@ -13,3 +12,8 @@ class Solver:
 				if " " not in self.puzzle.matrix[i][j]:
 					self.puzzleReference[(i,j)] = count
 					count+=1
+
+	# def getPossiblePlacements(piece):
+	# 	for i in range()
+
+	def rotateNinetyDegrees(self, piece)

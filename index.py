@@ -109,16 +109,17 @@ if __name__ == "__main__":
 
 	array = textFileToArray(inputFile)
 	array = traverseArray(array)
-	# for pieces in pieceCollection:
-	# 	print pieces.size
-	# 	for rows in pieces.matrix:
-	# 		print rows
-	# 	print "\n"
+	for pieces in pieceCollection:
+		print pieces.size
+		for rows in pieces.matrix:
+			print rows
+		print "\n"
 	pieceCollection.sort(key=lambda x: x.size)
 	puzzle = pieceCollection[-1]
 	pieceCollection.pop()
-	solver = Solver(pieceCollection, puzzle)
-	solver.buildPuzzleReference()
+	# solver = Solver(pieceCollection, puzzle)
+	# solver.buildPuzzleReference()
+	print pieceCollection[-1].brickList
 
 
 
