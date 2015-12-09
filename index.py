@@ -1,10 +1,13 @@
 from collections import deque
 from piece import Piece
+from solver import Solver
+import sys
 
 
 
 # List to store the info of each piece.
 pieceCollection = []
+puzzle = None
 
 def checkRight(array, r, c):
 	try:
@@ -44,10 +47,10 @@ def checkUp(array, r, c):
 
 #Reads in the text file, adds each character (including spaces) to an array, if it finds a new line it creates a new row.
 #Basically lays out the text file as a grid for easier processing.
-def textFileToArray():
+def textFileToArray(inputFile):
 	rowcount = 0
 	array = [[]]	
-	with open("test.txt") as f:
+	with open(inputFile) as f:
 		for line in f:
 			for char in line:
 				if "\n" in char:
@@ -59,8 +62,8 @@ def textFileToArray():
 
 #Starts searching through the array, once it finds a brick it starts to find the entire thing using findPiece (read comment for findPiece)
 def traverseArray(array):
-	for i in range(0, len(array)-1):
-		for j in range (len(array[i])-1):
+	for i in range(0, len(array)):
+		for j in range (0, len(array[i])):
 			if " " not in array[i][j]:
 				array = findPiece(array, i, j)
 	return array
@@ -99,12 +102,23 @@ def findPiece(array, r, c):
 	return array
 
 if __name__ == "__main__":
-	array = textFileToArray()
+	try:
+		inputFile = sys.argv[1]
+	except:
+		print "Need to designate an input file."
+
+	array = textFileToArray(inputFile)
 	array = traverseArray(array)
-	for pieces in pieceCollection:
-		print pieces.size
-		for rows in pieces.matrix:
-			print rows
-		print "\n"
+	# for pieces in pieceCollection:
+	# 	print pieces.size
+	# 	for rows in pieces.matrix:
+	# 		print rows
+	# 	print "\n"
+	pieceCollection.sort(key=lambda x: x.size)
+	puzzle = pieceCollection[-1]
+	pieceCollection.pop()
+	solver = Solver(pieceCollection, puzzle)
+	solver.buildPuzzleReference()
+
 
 
