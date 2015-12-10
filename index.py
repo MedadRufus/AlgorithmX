@@ -119,7 +119,8 @@ if __name__ == "__main__":
 	pieceCollection.pop()
 	# solver = Solver(pieceCollection, puzzle)
 	# solver.buildPuzzleReference()
-	print pieceCollection[-1].brickList
+	pieceCollection[-1].rotateClockWise()
+	pieceCollection[-1].rotateClockWise()
 
 
 

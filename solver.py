@@ -15,5 +15,3 @@ class Solver:
 
 	# def getPossiblePlacements(piece):
 	# 	for i in range()
-
-	def rotateNinetyDegrees(self, piece)
