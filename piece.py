@@ -1,11 +1,9 @@
 class Piece(object):
 
-
 	def __init__(self, inputBrickList):
 		self.brickList = inputBrickList
 		self.constructMatrix()
 		self.size = len(inputBrickList)
-
 
 	#Goes through passed in list of bricks and creates the matrix
 	def constructMatrix(self):
@@ -44,3 +42,23 @@ class Piece(object):
 		#Return the width/height so we know how big the array should be
 		#minheight/minwidth so we can translate brick locations from inputArray to locations in their small matrix.
 		return [minWidth, minHeight]
+
+	#Rotates the piece by ninety degrees.
+	def rotateClockWise(self):
+		tempMatrix = [[" " for x in  range(0, self.height)] for x in range(0, self.width)]
+		self.brickList = []
+		for i in range (0, self.height):
+			for j in range (0, self.width):
+				#Translates the matrix to a representation rotated 90 degrees.
+				tempMatrix[j][i] = self.matrix[self.height-i-1][j]
+				#Repopulates the bricklist with the correct locations
+				self.brickList.append([[j,i], tempMatrix[j][i]])
+
+		self.matrix = tempMatrix
+		#Switch height and width since, you know, they're different now.
+		self.width, self.height = self.height, self.width
+
+
+
+
+
