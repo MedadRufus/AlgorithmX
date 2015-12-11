@@ -4,6 +4,8 @@ class Piece(object):
 		self.brickList = inputBrickList
 		self.constructMatrix()
 		self.size = len(inputBrickList)
+		self.identity = None
+
 
 	#Goes through passed in list of bricks and creates the matrix
 	def constructMatrix(self):
@@ -36,6 +38,10 @@ class Piece(object):
 			if  bricks[0][1] > maxWidth:
 				maxWidth = bricks[0][1]
 
+		#HEIGHT AND WIDTH OF THE MATRIX CONTAINING THE PIECE. VERY VITAL
+		#Due to how python represents matrices, the height will always be associated with the i, or first [i][] of the array,
+		# width will always be associated with the j, or [][j] second value of the array
+		#This is kind of obvious but it leaves things open for stupid mistakes.
 		self.width = maxWidth - minWidth + 1
 		self.height = maxHeight - minHeight + 1
 
@@ -58,7 +64,16 @@ class Piece(object):
 		#Switch height and width since, you know, they're different now.
 		self.width, self.height = self.height, self.width
 
+	#Unique identity for use in dancing links/algorithm x
+	def setIdentity(self, value):
+		self.identity = value
 
+	def getIdentity(self):
+		return self.identity
 
-
+	#When storing bricks as placements before doing dancing links, must know where they'll actually lie on the board.
+	def translateBricks(self, y, x):
+		for i in range(0, len(self.brickList)):
+			self.brickList[i][0][0] = self.brickList[i][0][0]+y
+			self.brickList[i][0][0] = self.brickList[i][0][0]+x
 
