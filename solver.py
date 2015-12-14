@@ -23,10 +23,6 @@ class Solver:
 			self.puzzleReference[pieces.getIdentity()] = count
 			count += 1
 
-		for key in self.puzzleReference:
-			print key,
-			print  " -- ",
-			print self.puzzleReference[key]
 
 
 	#Begins the process of building every possible placement of a piece on an empty gameboard.

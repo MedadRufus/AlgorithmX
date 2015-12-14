@@ -58,7 +58,8 @@ class Piece(object):
 				#Translates the matrix to a representation rotated 90 degrees.
 				tempMatrix[j][i] = self.matrix[self.height-i-1][j]
 				#Repopulates the bricklist with the correct locations
-				self.brickList.append([[j,i], tempMatrix[j][i]])
+				if " " not in tempMatrix[j][i]:
+					self.brickList.append([[j,i], tempMatrix[j][i]])
 
 		self.matrix = tempMatrix
 		#Switch height and width since, you know, they're different now.

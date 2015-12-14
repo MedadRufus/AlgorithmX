@@ -1,9 +1,3 @@
-
-
-
-
-
-
 class Node(object):
  
     def __init__(self, data=None, head=None, left=None, right=None, up=None, down=None):
@@ -14,11 +8,8 @@ class Node(object):
         self.up = up
         self.down = down
 
-
-
-class Header(Node):
+class columnHeader(Node):
     size = 0
-
 
 def createRoot():
     root = Node()

@@ -37,8 +37,8 @@ if __name__ == "__main__":
 	solver = Solver(pieceCollection, puzzle)
 	#Build a list of every valid placement of a piece on an empty puzzle board.
 	solver.getAllPositions(pieceCollection, puzzle)
-		#solver.showPlacementList()
-	solver.checkValidPlacements(puzzle)
+	solver.showPlacementList()
+	#solver.checkValidPlacements(puzzle)
 	solver.buildPuzzleReference()
 
 
