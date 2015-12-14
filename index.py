@@ -7,6 +7,25 @@ import sys
 pieceCollection = []
 puzzle = None
 
+def showPieces():
+	print "  ------- Pieces -------  "
+	for pieces in pieceCollection:
+		print pieces.getIdentity(),
+		print ":"
+		for row in pieces.matrix:
+			print row
+		print " "
+	print "  ----------------------- "
+
+
+def showPuzzle():
+	print "  ------- Puzzle --------\n"
+	for row in puzzle.matrix:
+		print row
+	print "\n  -----------------------"
+
+
+
 if __name__ == "__main__":
 	#Get the input file name.
 	try:
@@ -32,14 +51,15 @@ if __name__ == "__main__":
 	for i in range (0, len(pieceCollection)):
 		pieceCollection[i].setIdentity(i)
 
-
+	showPieces()
+	showPuzzle()
 	#Instantiate a solver
 	solver = Solver(pieceCollection, puzzle)
 	#Build a list of every valid placement of a piece on an empty puzzle board.
 	solver.getAllPositions(pieceCollection, puzzle)
-	solver.showPlacementList()
-	#solver.checkValidPlacements(puzzle)
-	solver.buildPuzzleReference()
+
+	print "\nSearching for solutions... \n"
+	solver.beginSolving()
 
 
 
