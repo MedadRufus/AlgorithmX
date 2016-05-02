@@ -59,7 +59,10 @@ if __name__ == "__main__":
 	solver.getAllPositions(pieceCollection, puzzle)
 
 	print "\nSearching for solutions... \n"
-	solver.beginSolving()
+	testDict = solver.buildInitialDictionary()
+	print testDict
+
+
 
 
 

@@ -5,10 +5,9 @@ class Solver:
 	def __init__(self, pieces, puzzle):
 		self.pieces = pieces
 		self.puzzle = puzzle
-		self.puzzleReference = {}
 		self.placementList = []
 		self.solutionList = []
-
+		self.dancingDictionary = {}
 
 	#Begins the process of building every possible placement of a piece on an empty gameboard.
 	def getAllPositions(self, pieceList, puzzle):
@@ -25,9 +24,6 @@ class Solver:
 			for j in range(0, puzzle.width-piece.width+1):
 				self.checkFit(piece, puzzle, i, j)
 
-
-
-
 	#Iterates through each brick of the piece and checks if the position it's placed on is equal to its value (X -> X or red -> red, etc)
 	#This might be the last time you need to check whether it's a correct color/letter or not....
 	def checkFit(self, piece, puzzle, posY, posX):
@@ -41,7 +37,6 @@ class Solver:
 					else:
 						return False
 		self.addPlacement(piece, posY, posX)
-
 
 	#Adds the placement (positions the bricks would lay on, their values, etc) to the list of possible placements
 	#later used in algorithm X. At this point I believe the matrix is only useful for a visual rep of the piece,
@@ -72,17 +67,16 @@ class Solver:
 				else:
 					raise
 
-
 # ------------------------- Here's where we start building the torroidally linked list --------------------------------
-
 	#Sets up the solver		
 	def beginSolving(self):
-		partial_solution = self.getBlankMatrix()
-		number_solution =  self.getBlankMatrix()
-		placement_unused = self.placementList
-		placement_used = []
-		self.solve(partial_solution, number_solution, placement_unused, placement_used, 1)
-		self.showSolutions()
+		# partial_solution = self.getBlankMatrix()
+		# number_solution =  self.getBlankMatrix()
+		# placement_unused = self.placementList
+		# placement_used = []
+		# self.solve(partial_solution, number_solution, placement_unused, placement_used, 1)
+		# self.showSolutions()
+		self.showPlacements();
 		return
 
 	#Recursive function that checks every possible placement of every piece to see if it eventually
@@ -102,6 +96,30 @@ class Solver:
 					new_placement_unused = self.removeAlternatePlacements(placement, placement_unused)
 					self.solve(new_partial_solution, new_number_solution, new_placement_unused, new_placement_used, depth+1)
 			return
+
+	def buildInitialDictionary(self):
+		for i in range(0, len(self.puzzle.matrix)):
+			for j in range(0, len(self.puzzle.matrix[i])):
+				self.dancingDictionary[(i,j)] = []
+		return self.dancingDictionary
+
+	# def populateDictionary(self):
+	# 	for piece in self.placementList:
+	# 		print ""
+	# 		for brick in piece.brickList:
+	# 			self.dancingDictionary[(brick[0][0], brick[0][1])].append(piece.identity)
+	# 	return self.dancingDictionary
+
+
+
+
+
+
+
+
+
+
+
 
 	# Checks if a piece can be placed within the partial solution, it can't if the piece overlaps with another
 	# thats already been placed in that spot.
@@ -192,6 +210,13 @@ class Solver:
 			for row in solutions[1]:
 				print row
 			print "\n"
+
+	def showPlacements(self):
+		for placement in self.placementList:
+			print placement.identity
+			for brick in placement.brickList:
+				print brick,
+			print ""
 
 	#Gets a new matrix to be used in the above functions that's equal to the size of the puzzle
 	#Because Pythons pass by reference and I completely forgot that.
