@@ -17,14 +17,11 @@ def showPieces():
 		print " "
 	print "  ----------------------- "
 
-
 def showPuzzle():
 	print "  ------- Puzzle --------\n"
 	for row in puzzle.matrix:
 		print row
 	print "\n  -----------------------"
-
-
 
 if __name__ == "__main__":
 	#Get the input file name.
@@ -59,8 +56,11 @@ if __name__ == "__main__":
 	solver.getAllPositions(pieceCollection, puzzle)
 
 	print "\nSearching for solutions... \n"
-	testDict = solver.buildInitialDictionary()
-	print testDict
+	solver.buildColumnDictionary()
+	dictionaries = solver.buildRowDictionary()
+	solutions = solver.solve(dictionaries[0], dictionaries[1])
+	solver.showSolutions(list(solutions))
+
 
 
 

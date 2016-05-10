@@ -7,7 +7,8 @@ class Solver:
 		self.puzzle = puzzle
 		self.placementList = []
 		self.solutionList = []
-		self.dancingDictionary = {}
+		self.columnDictionary = {}
+		self.rowDictionary = {}
 
 	#Begins the process of building every possible placement of a piece on an empty gameboard.
 	def getAllPositions(self, pieceList, puzzle):
@@ -81,44 +82,86 @@ class Solver:
 
 	#Recursive function that checks every possible placement of every piece to see if it eventually
 	# finds a solution, which will then be caught by the base case and saved to the list of solutions
-	def solve(self, partial_solution, number_solution, placement_unused, placement_used, depth):
-		if self.checkSolution(partial_solution):
-			self.addSolution(partial_solution, number_solution, placement_used)
-			return
-		elif len(placement_unused) == 0:
-			return
-		else:
-			for placement in placement_unused:
-				if self.noOverlap(partial_solution, placement):
-					new_partial_solution, new_number_solution = self.addPlacementToSolution(partial_solution, number_solution, placement)
-					new_placement_used = copy.deepcopy(placement_used)
-					new_placement_used.append(placement)
-					new_placement_unused = self.removeAlternatePlacements(placement, placement_unused)
-					self.solve(new_partial_solution, new_number_solution, new_placement_unused, new_placement_used, depth+1)
-			return
+	# def solve(self, partial_solution, number_solution, placement_unused, placement_used, depth):
+	# 	if self.checkSolution(partial_solution):
+	# 		self.addSolution(partial_solution, number_solution, placement_used)
+	# 		return
+	# 	elif len(placement_unused) == 0:
+	# 		return
+	# 	else:
+	# 		for placement in placement_unused:
+	# 			if self.noOverlap(partial_solution, placement):
+	# 				new_partial_solution, new_number_solution = self.addPlacementToSolution(partial_solution, number_solution, placement)
+	# 				new_placement_used = copy.deepcopy(placement_used)
+	# 				new_placement_used.append(placement)
+	# 				new_placement_unused = self.removeAlternatePlacements(placement, placement_unused)
+	# 				self.solve(new_partial_solution, new_number_solution, new_placement_unused, new_placement_used, depth+1)
+	# 		return
 
-	def buildInitialDictionary(self):
+	#Builds the blank Column Dictionary
+	def buildColumnDictionary(self):
 		for i in range(0, len(self.puzzle.matrix)):
 			for j in range(0, len(self.puzzle.matrix[i])):
-				self.dancingDictionary[(i,j)] = []
-		return self.dancingDictionary
+				self.columnDictionary[(i,j)] = set()
+		for piece in self.pieces:
+			self.columnDictionary[piece.identity] = set()
+		return self.columnDictionary
 
-	# def populateDictionary(self):
-	# 	for piece in self.placementList:
-	# 		print ""
-	# 		for brick in piece.brickList:
-	# 			self.dancingDictionary[(brick[0][0], brick[0][1])].append(piece.identity)
-	# 	return self.dancingDictionary
+	#Builds the Row Dictionary and also populates both dictionaries.
+	def buildRowDictionary(self):
+		count = 0
+		for placement in self.placementList:
+			self.rowDictionary[count] = []
+			for brick in placement.brickList:
+				location = (brick[0][0], brick[0][1])
+				self.rowDictionary[count].append(location)
+				self.columnDictionary[location].add(count)
+			self.rowDictionary[count].append(placement.identity)
+			self.columnDictionary[placement.identity].add(count)
+			count += 1
+		return (self.columnDictionary, self.rowDictionary)
+
+	def solve(self, colDict, rowDict, solution=[]):
+	    if not colDict:
+	        yield list(solution)
+	    else:
+	        c = min(colDict, key=lambda c: len(colDict[c]))
+	        for r in list(colDict[c]):
+	            solution.append(r)
+	            cols = self.cover(colDict, rowDict, r)
+	            for s in self.solve(colDict, rowDict, solution):
+	                yield s
+	            self.uncover(colDict, rowDict, r, cols)
+	            solution.pop()
+
+	def cover(self, colDict, rowDict, rowID):
+	    cols = []
+	    for j in rowDict[rowID]:
+	        for i in colDict[j]:
+	            for k in rowDict[i]:
+	                if k != j:
+	                    colDict[k].remove(i)
+	        cols.append(colDict.pop(j))
+	    return cols
+
+	def uncover(self, colDict, rowDict, rowID, cols):
+	    for j in reversed(rowDict[rowID]):
+	        colDict[j] = cols.pop()
+	        for i in colDict[j]:
+	            for k in rowDict[i]:
+	                if k != j:
+	                    colDict[k].add(i)
 
 
 
-
-
-
-
-
-
-
+	def showSolutions(self, solutions):
+		for solution in solutions:
+			for placements in solution:
+				print self.rowDictionary[placements]
+			print ""
+		solutionRep = self.getBlankMatrix()
+		for row in solutionRep:
+			print row
 
 
 	# Checks if a piece can be placed within the partial solution, it can't if the piece overlaps with another
@@ -196,20 +239,20 @@ class Solver:
 		return equal
 
 	#Outputs the list of solutions after the search has been completed.
-	def showSolutions(self):
-		count = 1
-		for solutions in self.solutionList:
-			print "Solution #",
-			print count,
-			count+=1
-			print ":"
-			print "   Puzzle Representation: "
-			for row in solutions[0]:
-				print row
-			print "   Piece Representation"
-			for row in solutions[1]:
-				print row
-			print "\n"
+	# def showSolutions(self):
+	# 	count = 1
+	# 	for solutions in self.solutionList:
+	# 		print "Solution #",
+	# 		print count,
+	# 		count+=1
+	# 		print ":"
+	# 		print "   Puzzle Representation: "
+	# 		for row in solutions[0]:
+	# 			print row
+	# 		print "   Piece Representation"
+	# 		for row in solutions[1]:
+	# 			print row
+	# 		print "\n"
 
 	def showPlacements(self):
 		for placement in self.placementList:
@@ -225,9 +268,3 @@ class Solver:
 		if len(blank_matrix) != len(self.puzzle.matrix) or len(blank_matrix[0]) != len(self.puzzle.matrix[0]):
 			raise
 		return blank_matrix
-
-
-
-
-
-
