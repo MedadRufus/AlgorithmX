@@ -7,62 +7,59 @@ import sys
 pieceCollection = []
 puzzle = None
 
+
 def showPieces():
-	print "  ------- Pieces -------  "
-	for pieces in pieceCollection:
-		print pieces.getIdentity(),
-		print ":"
-		for row in pieces.matrix:
-			print row
-		print " "
-	print "  ----------------------- "
+    print "  ------- Pieces -------  "
+    for pieces in pieceCollection:
+        print pieces.getIdentity(),
+        print ":"
+        for row in pieces.matrix:
+            print row
+        print " "
+    print "  ----------------------- "
+
 
 def showPuzzle():
-	print "  ------- Puzzle --------\n"
-	for row in puzzle.matrix:
-		print row
-	print "\n  -----------------------"
+    print "  ------- Puzzle --------\n"
+    for row in puzzle.matrix:
+        print row
+    print "\n  -----------------------"
+
 
 if __name__ == "__main__":
-	#Get the input file name.
-	try:
-		inputFile = sys.argv[1]
-	except:
-		print "Need to designate an input file."
+    # Get the input file name.
+    try:
+        inputFile = sys.argv[1]
+    except:
+        print "Need to designate an input file."
 
-	reader = Reader()
-	#Turn the input file into a giant matrix.
-	array = reader.textFileToArray(inputFile)
-	#Go through the array and get all the contiguous areas of characters that represent the pieces and gameboards.
-	#This uses _________ algorithm (Built it a week ago and forgot to write down what I used, find it later)
-	pieceCollection = reader.parseArray(array)
+    reader = Reader()
+    # Turn the input file into a giant matrix.
+    array = reader.textFileToArray(inputFile)
+    # Go through the array and get all the contiguous areas of characters that represent the pieces and gameboards.
+    # This uses _________ algorithm (Built it a week ago and forgot to write down what I used, find it later)
+    pieceCollection = reader.parseArray(array)
 
-	#Sort the array by number of bricks and get the biggest one, make that the puzzle board.
-	pieceCollection.sort(key=lambda x: x.size)
-	puzzle = pieceCollection[-1]
-	pieceCollection.pop()
+    # Sort the array by number of bricks and get the biggest one, make that the puzzle board.
+    pieceCollection.sort(key=lambda x: x.size)
+    puzzle = pieceCollection[-1]
+    pieceCollection.pop()
 
-	#Give each piece a unique number so that the solver won't pick the same piece placed in a different location
-	# as part of the answer (assumption is that a piece can only be placed once.)
-	# solver does this by creating a column for each pieces identity.
-	for i in range (0, len(pieceCollection)):
-		pieceCollection[i].setIdentity(i)
+    # Give each piece a unique number so that the solver won't pick the same piece placed in a different location
+    # as part of the answer (assumption is that a piece can only be placed once.)
+    # solver does this by creating a column for each pieces identity.
+    for i in range(0, len(pieceCollection)):
+        pieceCollection[i].setIdentity(i)
 
-	showPieces()
-	showPuzzle()
-	#Instantiate a solver
-	solver = Solver(pieceCollection, puzzle)
-	#Build a list of every valid placement of a piece on an empty puzzle board.
-	solver.getAllPositions(pieceCollection, puzzle)
+    showPieces()
+    showPuzzle()
+    # Instantiate a solver
+    solver = Solver(pieceCollection, puzzle)
+    # Build a list of every valid placement of a piece on an empty puzzle board.
+    solver.getAllPositions(pieceCollection, puzzle)
 
-	print "\nSearching for solutions... \n"
-	solver.buildColumnDictionary()
-	dictionaries = solver.buildRowDictionary()
-	solutions = solver.solve(dictionaries[0], dictionaries[1])
-	solver.showSolutions(list(solutions))
-
-
-
-
-
-
+    print "\nSearching for solutions... \n"
+    solver.buildColumnDictionary()
+    dictionaries = solver.buildRowDictionary()
+    solutions = solver.solve(dictionaries[0], dictionaries[1])
+    solver.showSolutions(list(solutions))
